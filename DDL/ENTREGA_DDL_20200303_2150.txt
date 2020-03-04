@@ -1,0 +1,5 @@
+ALTER TABLE payment_order DROP COLUMN id_user;
+ALTER TABLE payment_order ALTER COLUMN date TYPE TIMESTAMP;
+COMMENT ON COLUMN purchase_order.status IS '1 - PENDING, 2 - APPROVED, 3 - REPROVED, 4 - REVIEW';
+ALTER TABLE purchase_order ALTER COLUMN approval_user DROP NOT NULL;
+ALTER TABLE purchase_price RENAME CONSTRAINT pk_purchase_price_purchase_order TO fk_purchase_price_purchase_order;
