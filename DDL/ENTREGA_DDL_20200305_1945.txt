@@ -1,0 +1,40 @@
+----------------------------------------------------------------------
+---      RENOMEIA TABELA PURCHASE_ORDER PARA PURCHASE_REQUEST      ---
+----------------------------------------------------------------------
+---              ADICIONANDO CAMPO PRODUCT_DESCRIPTION             ---
+----------------------------------------------------------------------
+ALTER TABLE dtd8m7r8hkfr.public.purchase_order RENAME TO purchase_request;
+ALTER TABLE dtd8m7r8hkfr.public.purchase_request ADD PRODUCT_DESCRIPTION VARCHAR (100) NOT NULL;
+
+COMMENT ON COLUMN purchase_request.PRODUCT_DESCRIPTION IS 'Descrição do produto';
+
+----------------------------------------------------------------------
+---                  CRIA TABELA PRICE_QUOTATION                   ---
+----------------------------------------------------------------------
+CREATE TABLE PRICE_QUOTATION (
+    ID SERIAL,
+    LINK VARCHAR (255) NOT NULL,
+    VALUE DOUBLE PRECISION NOT NULL
+);
+
+COMMENT ON TABLE PRICE_QUOTATION IS 'Tabela de cotações de preço - necessários para pedidos de compra';
+COMMENT ON COLUMN PRICE_QUOTATION.ID IS 'ID da tabela';
+COMMENT ON COLUMN PRICE_QUOTATION.LINK IS 'Endereço (URL) do site para compra';
+COMMENT ON COLUMN PRICE_QUOTATION.VALUE IS 'Valor do produto sendo cotado';
+
+ALTER TABLE PRICE_QUOTATION ADD CONSTRAINT PK_PRICE_QUOTATION PRIMARY KEY (ID);
+
+----------------------------------------------------------------------
+--- CRIA TABELA DE RELACIONAMENTO PURCHASE_REQUEST_PRICE_QUOTATION ---
+----------------------------------------------------------------------
+CREATE TABLE PURCHASE_REQUEST_PRICE_QUOTATION (
+    ID_PURCHASE_REQUEST INT NOT NULL,
+    ID_PRICE_QUOTATION INT NOT NULL,
+    CONSTRAINT PK_PURCHASE_REQUEST_PRICE_QUOTATION PRIMARY KEY (ID_PURCHASE_REQUEST, ID_PRICE_QUOTATION),
+    CONSTRAINT FK_PURCHASE_REQUEST_PRICE_QUOTATION_PURCHASE_REQUEST FOREIGN KEY (ID_PURCHASE_REQUEST) REFERENCES PURCHASE_REQUEST (ID),
+    CONSTRAINT FK_PURCHASE_REQUEST_PRICE_QUOTATION_PRICE_QUOTATION FOREIGN KEY (ID_PRICE_QUOTATION) REFERENCES PRICE_QUOTATION (ID)
+);
+
+COMMENT ON TABLE PURCHASE_REQUEST_PRICE_QUOTATION IS 'Tabela de relacionamento entre PURCHASE_REQUEST e PRICE_QUOTATION';
+COMMENT ON COLUMN PURCHASE_REQUEST_PRICE_QUOTATION.ID_PRICE_QUOTATION IS 'ID da cotação de preço';
+COMMENT ON COLUMN PURCHASE_REQUEST_PRICE_QUOTATION.ID_PURCHASE_REQUEST IS 'ID do pedido de compra';
