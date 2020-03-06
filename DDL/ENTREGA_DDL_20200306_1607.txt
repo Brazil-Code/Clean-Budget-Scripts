@@ -1,0 +1,9 @@
+---------------------------------------------------------------------------------
+--                    REMOVENDO COLUNA PRODUCT_DESCRIPTION                    ---
+---------------------------------------------------------------------------------
+ALTER TABLE dtd8m7r8hkfr.public.purchase_request DROP COLUMN product_description;
+
+---------------------------------------------------------------------------------
+--                      REMOVENDO TABELA PURCHASE_PRICE                       ---
+---------------------------------------------------------------------------------
+DROP TABLE dtd8m7r8hkfr.public.purchase_price;
