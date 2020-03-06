@@ -1,0 +1,11 @@
+------------------------------------------------------------------------------------------------
+---                  ADICIONANDO COLUNAS PURCHASE_ITEM, AMOUNT, TOTAL_VALUE                  ---
+------------------------------------------------------------------------------------------------
+ALTER TABLE dtd8m7r8hkfr.public.price_quotation ADD COLUMN PURCHASE_ITEM VARCHAR (100) NOT NULL;
+ALTER TABLE dtd8m7r8hkfr.public.price_quotation ADD COLUMN AMOUNT INT NOT NULL;
+ALTER TABLE dtd8m7r8hkfr.public.price_quotation ADD COLUMN TOTAL_VALUE DOUBLE PRECISION NOT NULL;
+
+-----------------------------------------------------------------------------------------------
+---                         RENOMEANDO COLUNA VALUE PARA UNIT_VALUE                         ---
+-----------------------------------------------------------------------------------------------
+ALTER TABLE dtd8m7r8hkfr.public.price_quotation RENAME COLUMN value TO UNIT_VALUE;
