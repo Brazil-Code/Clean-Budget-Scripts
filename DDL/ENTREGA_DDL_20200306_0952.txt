@@ -1,0 +1,36 @@
+-------------------------------------------------------------------------------------
+---                   CRIANDO INDICE UNICO PARA CNPJ DA EMPRESA                   ---
+-------------------------------------------------------------------------------------
+ALTER TABLE dtd8m7r8hkfr.public.company ADD CONSTRAINT UK_COMPANY_CNPJ UNIQUE (cnpj);
+
+-------------------------------------------------------------------------------------
+---                  RENOMEANDO REFERENCIAS PARA PAYMENT_REQUEST                  ---
+-------------------------------------------------------------------------------------
+ALTER TABLE dtd8m7r8hkfr.public.payment_order RENAME COLUMN id_purchase_order TO id_purchase_request;
+ALTER TABLE dtd8m7r8hkfr.public.payment_order RENAME CONSTRAINT fk_payment_order_purchase_order TO fk_payment_order_purchase_request;
+
+-------------------------------------------------------------------------------------
+---              REMOVENDO RELACIONAMENTO COM BUDGET - AREA JA POSSUI             ---
+-------------------------------------------------------------------------------------
+ALTER TABLE dtd8m7r8hkfr.public.payment_order DROP COLUMN id_budget;
+
+-------------------------------------------------------------------------------------
+---                     CRIANDO INDICE UNICO PARA NOME DA AREA                    ---
+-------------------------------------------------------------------------------------
+ALTER TABLE dtd8m7r8hkfr.public.area ADD CONSTRAINT UK_AREA_NAME UNIQUE (name);
+
+-------------------------------------------------------------------------------------
+---                   CRIANDO INDICE UNICO PARA EMAIL DO USUARIO                  ---
+-------------------------------------------------------------------------------------
+ALTER TABLE dtd8m7r8hkfr.public.sys_user ADD CONSTRAINT UK_USER_EMAIL UNIQUE (email);
+
+-------------------------------------------------------------------------------------
+---                      ALTERANDO COLUNA EMAIL PARA NOT NULL                     ---
+-------------------------------------------------------------------------------------
+ALTER TABLE dtd8m7r8hkfr.public.sys_user ALTER COLUMN email SET NOT NULL;
+
+-------------------------------------------------------------------------------------
+---                ALTERANDO LENGTH DAS COLUNAS USERNAME E PASSWORD               ---
+-------------------------------------------------------------------------------------
+ALTER TABLE dtd8m7r8hkfr.public.sys_user ALTER COLUMN username TYPE VARCHAR(20);
+ALTER TABLE dtd8m7r8hkfr.public.sys_user ALTER COLUMN password TYPE VARCHAR(20);
