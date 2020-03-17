@@ -1,8 +1,11 @@
+----------------------------------------------------------------------------------------
+---                                CREATE TABLE BUDGET                               ---
+----------------------------------------------------------------------------------------
 CREATE TABLE BUDGET (
     ID SERIAL,
     SERVICE VARCHAR (100) NOT NULL,
-    BUDGETED FLOAT NOT NULL,
-    EFFECTIVE FLOAT NOT NULL,
+    BUDGETED DOUBLE PRECISION NOT NULL,
+    EFFECTIVE DOUBLE PRECISION NOT NULL,
     MANAGEMENT_ACCOUNT VARCHAR (100) NOT NULL,
     YEAR VARCHAR (4) NOT NULL,
     DISABLED BOOLEAN NOT NULL,
@@ -25,6 +28,9 @@ COMMENT ON COLUMN BUDGET.DISABLED IS 'Orçamento desabilitado - 0: FALSE; 1: TRU
 COMMENT ON COLUMN BUDGET.CREATED_AT IS 'Data e hora de criação';
 COMMENT ON COLUMN BUDGET.UPDATED_AT IS 'Data e hora da ultima alteração';
 
+----------------------------------------------------------------------------------------
+---                                 CREATE TABLE  AREA                               ---
+----------------------------------------------------------------------------------------
 CREATE TABLE AREA (
     ID SERIAL,
     ID_BUDGET INT NOT NULL,
@@ -43,6 +49,9 @@ COMMENT ON COLUMN AREA.ID_BUDGET IS 'ID do budget da área';
 COMMENT ON COLUMN AREA.NAME IS 'Nome da área';
 COMMENT ON COLUMN AREA.DISABLED IS 'Area desabilitada - 0: FALSE; 1: TRUE - DEFAULT 0';
 
+----------------------------------------------------------------------------------------
+---                                 CREATE TABLE USER                                ---
+----------------------------------------------------------------------------------------
 CREATE TABLE SYS_USER (
     ID SERIAL,
     ID_AREA INT NOT NULL,
@@ -50,13 +59,14 @@ CREATE TABLE SYS_USER (
     PASSWORD VARCHAR (50) NOT NULL,
     FIRST_NAME VARCHAR (30) NOT NULL,
     LAST_NAME VARCHAR (30),
-    EMAIL VARCHAR (100),
+    EMAIL VARCHAR (100) NOT NULL,
     DISABLED BOOLEAN NOT NULL,
     CREATED_AT TIMESTAMP NOT NULL,
     UPDATED_AT TIMESTAMP,
     CONSTRAINT PK_USER PRIMARY KEY (ID),
     CONSTRAINT FK_USER_AREA FOREIGN KEY (ID_AREA) REFERENCES AREA (ID),
-    CONSTRAINT UK_USER_USERNAME UNIQUE (USERNAME)
+    CONSTRAINT UK_USER_USERNAME UNIQUE (USERNAME),
+    CONSTRAINT UK_USER_EMAIL UNIQUE (EMAIL)
 );
 
 ALTER TABLE SYS_USER ALTER COLUMN DISABLED SET DEFAULT FALSE;
@@ -74,12 +84,15 @@ COMMENT ON COLUMN SYS_USER.DISABLED IS 'Usuário desabilitado - 0: FALSE; 1: TRU
 COMMENT ON COLUMN SYS_USER.CREATED_AT IS 'Data e hora de criação';
 COMMENT ON COLUMN SYS_USER.UPDATED_AT IS 'Data e hora da ultima alteração';
 
+----------------------------------------------------------------------------------------
+---                                 CREATE TABLE LOG                                 ---
+----------------------------------------------------------------------------------------
 CREATE TABLE LOG (
     ID SERIAL,
     ID_USER INT NOT NULL,
-    IP VARCHAR (20),
+    IP VARCHAR (20) NOT NULL,
     DESCRIPTION VARCHAR(255) NOT NULL,
-    TIMESTAMP timestamp,
+    TIMESTAMP timestamp NOT NULL,
     CONSTRAINT PK_LOG PRIMARY KEY (ID),
     CONSTRAINT FK_LOG_USER FOREIGN KEY (ID_USER) REFERENCES SYS_USER (ID)
  );
@@ -93,6 +106,9 @@ COMMENT ON COLUMN LOG.IP IS 'Ip do usuário';
 COMMENT ON COLUMN LOG.DESCRIPTION IS 'Descrição do Log';
 COMMENT ON COLUMN LOG.TIMESTAMP IS 'Data e hora da inserção';
 
+----------------------------------------------------------------------------------------
+---                              CREATE TABLE PROFILE                                ---
+----------------------------------------------------------------------------------------
 CREATE TABLE PROFILE (
     ID SERIAL,
     DESCRIPTION VARCHAR (50) NOT NULL,
@@ -108,6 +124,9 @@ COMMENT ON COLUMN PROFILE.ID IS 'Id do Perfil';
 COMMENT ON COLUMN PROFILE.DESCRIPTION IS 'Descrição do Perfil';
 COMMENT ON COLUMN PROFILE.DISABLED IS 'Perfil desabilitado - 0: FALSE; 1: TRUE - DEFAULT 0';
 
+----------------------------------------------------------------------------------------
+---                            CREATE TABLE USER_PROFILE                             ---
+----------------------------------------------------------------------------------------
 CREATE TABLE USER_PROFILE (
     ID_USER INT NOT NULL,
     ID_PROFILE INT NOT NULL,
@@ -120,6 +139,9 @@ COMMENT ON TABLE USER_PROFILE IS 'Tabela de Relação Usuário x Perfil';
 COMMENT ON COLUMN USER_PROFILE.ID_USER IS 'Id do Usuário';
 COMMENT ON COLUMN USER_PROFILE.ID_PROFILE IS 'Id do Perfil';
 
+----------------------------------------------------------------------------------------
+---                            CREATE TABLE FUNCTIONALITY                            ---
+----------------------------------------------------------------------------------------
 CREATE TABLE FUNCTIONALITY (
     ID SERIAL,
     DESCRIPTION VARCHAR (50) NOT NULL,
@@ -139,6 +161,9 @@ COMMENT ON COLUMN FUNCTIONALITY.URI IS 'Link de acesso web';
 COMMENT ON COLUMN FUNCTIONALITY.ACTION IS 'Tipo de ação';
 COMMENT ON COLUMN FUNCTIONALITY.DISABLED IS 'Funcionalidade desabilitada - 0: FALSE; 1: TRUE - DEFAULT 0';
 
+----------------------------------------------------------------------------------------
+---                        CREATE TABLE PROFILE_FUNCTIONALITY                        ---
+----------------------------------------------------------------------------------------
 CREATE TABLE PROFILE_FUNCTIONALITY (
     ID_PROFILE INT NOT NULL,
     ID_FUNCTIONALITY INT NOT NULL,
@@ -151,7 +176,10 @@ COMMENT ON TABLE PROFILE_FUNCTIONALITY IS 'Tabela de Relação Perfil x Funciona
 COMMENT ON COLUMN PROFILE_FUNCTIONALITY.ID_PROFILE IS 'Id do Perfil';
 COMMENT ON COLUMN PROFILE_FUNCTIONALITY.ID_FUNCTIONALITY IS 'Id da Funcionalidade';
 
-CREATE TABLE PURCHASE_REQUEST(
+----------------------------------------------------------------------------------------
+---                           CREATE TABLE PURCHASE_REQUEST                          ---
+----------------------------------------------------------------------------------------
+CREATE TABLE PURCHASE_REQUEST (
         ID SERIAL,
         ID_CREATE_USER INT NOT NULL,
         ID_MANAGER INT NOT NULL,
@@ -171,17 +199,20 @@ COMMENT ON COLUMN PURCHASE_REQUEST.ID IS 'Id do Pedido de Compra';
 COMMENT ON COLUMN PURCHASE_REQUEST.ID_CREATE_USER IS 'Id do Usuário de criação';
 COMMENT ON COLUMN PURCHASE_REQUEST.ID_MANAGER IS 'Id do Usuário de aprovação';
 COMMENT ON COLUMN PURCHASE_REQUEST.OBSERVATION IS 'Observação';
-COMMENT ON COLUMN PURCHASE_REQUEST.STATUS IS 'Status do Pedido';
+COMMENT ON COLUMN PURCHASE_REQUEST.STATUS IS 'Status do Pedido - 1: PENDING, 2: APPROVED, 3: REPROVED, 4: PENDING';
 COMMENT ON COLUMN PURCHASE_REQUEST.CREATED_AT IS 'Data e hora de criação';
 COMMENT ON COLUMN PURCHASE_REQUEST.UPDATED_AT IS 'Data e hora da ultima alteração';
 
-CREATE TABLE PRICE_QUOTATION(
+----------------------------------------------------------------------------------------
+---                           CREATE TABLE PRICE_QUOTATION                           ---
+----------------------------------------------------------------------------------------
+CREATE TABLE PRICE_QUOTATION (
     ID SERIAL,
     PURCHASE_ITEM VARCHAR(150) NOT NULL,
     LINK VARCHAR(255) NOT NULL,
-    TOTAL_VALUE FLOAT NOT NULL,
-    UNIT_VALUE FLOAT NOT NULL,
-    AMOUNT FLOAT NOT NULL,
+    TOTAL_VALUE DOUBLE PRECISION NOT NULL,
+    UNIT_VALUE DOUBLE PRECISION NOT NULL,
+    AMOUNT INT NOT NULL,
     CONSTRAINT PK_PRICE_QUOTATION PRIMARY KEY (ID)
 );
 
@@ -195,7 +226,10 @@ COMMENT ON COLUMN PRICE_QUOTATION.TOTAL_VALUE IS 'Valor total da Cotação';
 COMMENT ON COLUMN PRICE_QUOTATION.UNIT_VALUE IS 'Valor unitário do item';
 COMMENT ON COLUMN PRICE_QUOTATION.AMOUNT IS 'Quantidade de itens cotados';
 
-CREATE TABLE PURCHASE_REQUEST_PRICE_QUOTATION(
+----------------------------------------------------------------------------------------
+---                  CREATE TABLE PURCHASE_REQUEST_PRICE_QUOTATION                   ---
+----------------------------------------------------------------------------------------
+CREATE TABLE PURCHASE_REQUEST_PRICE_QUOTATION (
   ID_PURCHASE_REQUEST INT NOT NULL,
   ID_PRICE_QUOTATION INT NOT NULL,
   CONSTRAINT PK_PURCHASE_REQUEST_PRICE_QUOTATION PRIMARY KEY (ID_PURCHASE_REQUEST,ID_PRICE_QUOTATION),
@@ -207,7 +241,10 @@ COMMENT ON TABLE PURCHASE_REQUEST_PRICE_QUOTATION IS 'Tabela de Relação Pedido
 COMMENT ON COLUMN PURCHASE_REQUEST_PRICE_QUOTATION.ID_PURCHASE_REQUEST IS 'Id do Pedido de Compra';
 COMMENT ON COLUMN PURCHASE_REQUEST_PRICE_QUOTATION.ID_PRICE_QUOTATION IS 'Id da Cotação';
 
-CREATE TABLE SUPPLIER(
+----------------------------------------------------------------------------------------
+---                               CREATE TABLE SUPPLIER                              ---
+----------------------------------------------------------------------------------------
+CREATE TABLE SUPPLIER (
     ID SERIAL,
     CNPJ VARCHAR(20) NOT NULL,
     CORPORATE_NAME VARCHAR(150) NOT NULL,
@@ -219,7 +256,8 @@ CREATE TABLE SUPPLIER(
     DISABLED BOOLEAN NOT NULL,
     CREATED_AT TIMESTAMP NOT NULL,
     UPDATED_AT TIMESTAMP,
-    CONSTRAINT PK_SUPPLIER PRIMARY KEY (ID)
+    CONSTRAINT PK_SUPPLIER PRIMARY KEY (ID),
+    CONSTRAINT UK_SUPPLIER_CNPJ UNIQUE (CNPJ)
 );
 
 ALTER TABLE SUPPLIER ALTER COLUMN DISABLED SET DEFAULT FALSE;
@@ -238,13 +276,16 @@ COMMENT ON COLUMN SUPPLIER.DISABLED IS 'Fornecedor desabilitado - 0: FALSE; 1: T
 COMMENT ON COLUMN SUPPLIER.CREATED_AT IS 'Data e hora de criação';
 COMMENT ON COLUMN SUPPLIER.UPDATED_AT IS 'Data e hora da ultima alteração';
 
-CREATE TABLE PAYMENT_ORDER(
+----------------------------------------------------------------------------------------
+---                            CREATE TABLE PAYMENT_ORDER                            ---
+----------------------------------------------------------------------------------------
+CREATE TABLE PAYMENT_ORDER (
     ID SERIAL,
     ID_PURCHASE_REQUEST INT NOT NULL,
     ID_AREA INT NOT NULL,
     ID_SUPPLIER INT NOT NULL,
     DATE TIMESTAMP NOT NULL,
-    VALUE FLOAT NOT NULL,
+    VALUE DOUBLE PRECISION NOT NULL,
     INVOICE_NUMBER INT NOT NULL,
     INVOICE_PATH VARCHAR(150) NOT NULL,
     DISABLED BOOLEAN NOT NULL,
@@ -272,7 +313,10 @@ COMMENT ON COLUMN PAYMENT_ORDER.DISABLED IS 'Ordem de Pagamento desabilitada - 0
 COMMENT ON COLUMN PAYMENT_ORDER.CREATED_AT IS 'Data e hora de criação';
 COMMENT ON COLUMN PAYMENT_ORDER.UPDATED_AT IS 'Data e hora da ultima alteração';
 
-CREATE TABLE PAYMENT_ORDER_HISTORIC(
+----------------------------------------------------------------------------------------
+---                        CREATE TABLE PAYMENT_ORDER_HISTORIC                       ---
+----------------------------------------------------------------------------------------
+CREATE TABLE PAYMENT_ORDER_HISTORIC (
     ID SERIAL,
     ID_PAYMENT_ORDER INT NOT NULL,
     OBSERVATION VARCHAR(255),

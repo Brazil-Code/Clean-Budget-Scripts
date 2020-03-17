@@ -1,0 +1,11 @@
+-------------------------------------------------------------------------------------
+---      REMOVENDO COLUNA DE ITEM_COMPRA E ADICIONANDO COLUNA DE OBSERVAÇÃO       ---
+-------------------------------------------------------------------------------------
+ALTER TABLE price_quotation DROP COLUMN purchase_item;
+ALTER TABLE price_quotation ADD COLUMN observation VARCHAR (255);
+
+-------------------------------------------------------------------------------------
+---      REMOVENDO COLUNA DE OBSERVAÇÃO E ADICIONANDO COLUNA DE ITEM_COMPRA       ---
+-------------------------------------------------------------------------------------
+ALTER TABLE purchase_request DROP COLUMN observation;
+ALTER TABLE purchase_request ADD COLUMN purchase_item VARCHAR (150) NOT NULL DEFAULT '-';
