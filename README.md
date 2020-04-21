@@ -1,9 +1,9 @@
-# Clean-Budget-Scripts
-## Project's Scripts Repository
+<h2 align="center">
+  CLEAN-BUDGET-SCRIPTS - Scripts Repository
+</h2>
 
-- Author: Gabriel Guarido de Oliveira
-- Created at: 02/19/2020
+## :bust_in_silhouette: Author
+* Gabriel Guarido
 
----
-
-Repository created in order to storage all database scripts executed in the project: <b>Clean Budget</b>
+## :memo: License
+This project is under MIT license. Check the file [LICENSE](LICENSE) for more information.
