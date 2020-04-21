@@ -2,6 +2,9 @@
   CLEAN-BUDGET-SCRIPTS - Scripts Repository
 </h2>
 
+## About
+Repository created in order to storage all database scripts executed in the **Clean Budget** project.
+
 ## :bust_in_silhouette: Author
 * Gabriel Guarido
 
